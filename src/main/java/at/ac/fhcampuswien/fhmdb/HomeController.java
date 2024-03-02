@@ -42,7 +42,12 @@ public class HomeController implements Initializable {
         // initialize UI stuff
         movieListView.setItems(observableMovies);   // set data of observable list to list view
         movieListView.setCellFactory(movieListView -> new MovieCell()); // use custom cell factory to display data
-
+        /*
+        observableMovies.clear();
+        movieListView.setCellFactory(movieListView -> new MovieCell());
+        observableMovies.addAll(sortedMovieList);
+        movieListView.setCellFactory(movieListView -> new MovieCell());
+        */
         // TODO add genre filter items with genreComboBox.getItems().addAll(...)
         genreComboBox.setPromptText("Filter by Genre");
 
