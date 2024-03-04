@@ -33,9 +33,8 @@ public class MovieCell extends ListCell<Movie> {
 
 
             // color scheme
-            title.getStyleClass().add("text-yellow");
-            detail.getStyleClass().add("text-white");
-            layout.setBackground(new Background(new BackgroundFill(Color.web("#454545"), null, null)));
+            title.getStyleClass().add("move-cell-title");
+            layout.setBackground(new Background(new BackgroundFill(Color.web("lightgray"), null, null)));
 
             // layout
             title.fontProperty().set(title.getFont().font(20));
