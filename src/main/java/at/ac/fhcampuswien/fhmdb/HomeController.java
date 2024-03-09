@@ -36,11 +36,31 @@ public class HomeController implements Initializable {
     private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();   // automatically updates corresponding UI elements when underlying data changes
 
     private SortedList getMoviesWithAppliedFilters(){
-        return sortBtn.getText().equals("Sort (asc)") ? new SortedList(getFiltered(), Comparator.comparing(Movie::getTitle).reversed()) : new SortedList(getFiltered(), Comparator.comparing(Movie::getTitle));
+        return sortBtn.getText().equals("Sort (asc)")
+                ? new SortedList(getFiltered(), Comparator.comparing(Movie::getTitle).reversed())
+                : new SortedList(getFiltered(), Comparator.comparing(Movie::getTitle));
     }
     private ObservableList<Movie> getFiltered(){
-        if(genreComboBox.getSelectionModel().isEmpty()) return observableMovies;
-        return observableMovies.filtered(movie -> movie.getGenresAsString().contains(genreComboBox.getValue().toString()));
+        ObservableList<Movie> filteredMoviesByGenre = filterByGenre(observableMovies);
+        ObservableList<Movie> filteredMoviesByTitle = filterByTitle(filteredMoviesByGenre);
+        return filteredMoviesByTitle;
+
+
+    }
+
+    //Filter Movies By Genre
+    private ObservableList<Movie> filterByGenre(ObservableList<Movie> movies){
+        boolean isEmpty = genreComboBox.getSelectionModel().isEmpty();
+        if(isEmpty) return movies;
+        String comboboxValue = genreComboBox.getValue().toString();
+        return movies.filtered(movie -> movie.getGenresAsString().contains(comboboxValue));
+    }
+
+    //Filter Movies By Title
+    private ObservableList<Movie> filterByTitle(ObservableList<Movie> movies){
+        String searchText = searchField.getText().toLowerCase();
+
+        return movies.filtered(movie -> movie.getTitle().toLowerCase().contains(searchText));
     }
 
     @Override
@@ -76,6 +96,14 @@ public class HomeController implements Initializable {
         });
 
         // Search (Title + Genre + Sort)
+        searchBtn.setOnAction(actionEvent -> {
+            ObservableList<Movie> filteredByGenre = filterByGenre(observableMovies);
+
+            movieListView.setItems(filterByTitle(filteredByGenre));
+
+
+
+        });
 
     }
 }
