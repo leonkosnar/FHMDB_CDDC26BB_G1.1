@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Movie {
+public class    Movie {
     private String title;
     private String description;
     public enum genreEnum {
@@ -22,6 +22,8 @@ public class Movie {
         this.description = description;
         this.genres = genres;
     }
+
+
 
     public String getTitle() {
         return title;
