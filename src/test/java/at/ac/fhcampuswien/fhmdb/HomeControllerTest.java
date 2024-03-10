@@ -22,7 +22,6 @@ public class HomeControllerTest {
 
         // Assert
         assertEquals("Back to the Future", allMovies.get(0).getTitle(), "First movie should be 'Back to the Future'");
-        // Add more assertions as needed
     }
 
     @Test
@@ -35,7 +34,6 @@ public class HomeControllerTest {
 
         // Assert
         assertEquals("The Silence of the Lambs", allMovies.get(0).getTitle(), "First movie should be 'The Silence of the Lambs'");
-        // Add more assertions as needed
     }
 
     @Test
@@ -48,7 +46,6 @@ public class HomeControllerTest {
 
         // Assert
         assertEquals("Star Wars: Episode I – The Phantom Menace", allMovies.get(0).getTitle(), "First movie should be 'Star Wars: Episode I – The Phantom Menace'");
-        // Add more assertions as needed
     }
 
     @Test
