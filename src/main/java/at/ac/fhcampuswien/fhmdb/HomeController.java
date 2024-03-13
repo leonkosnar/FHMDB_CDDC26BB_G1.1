@@ -35,32 +35,20 @@ public class HomeController implements Initializable {
 
     private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();   // automatically updates corresponding UI elements when underlying data changes
 
-    private SortedList getMoviesWithAppliedFilters(){
-        return sortBtn.getText().equals("Sort (asc)")
-                ? new SortedList(getFiltered(), Comparator.comparing(Movie::getTitle).reversed())
-                : new SortedList(getFiltered(), Comparator.comparing(Movie::getTitle));
-    }
-    private ObservableList<Movie> getFiltered(){
-        ObservableList<Movie> filteredMoviesByGenre = filterByGenre(observableMovies);
-        ObservableList<Movie> filteredMoviesByTitle = filterByTitle(filteredMoviesByGenre);
-        return filteredMoviesByTitle;
-
-
+    protected SortedList<Movie> getMoviesWithAppliedFilters(ObservableList<Movie> movies, String sort, String comboboxValue, String searchText){
+        return sort.equals("Sort (asc)")
+                ? new SortedList<Movie>(filterByTitle(filterByGenre(movies, comboboxValue), searchText), Comparator.comparing(Movie::getTitle).reversed())
+                : new SortedList<Movie>(filterByTitle(filterByGenre(movies, comboboxValue), searchText), Comparator.comparing(Movie::getTitle));
     }
 
     //Filter Movies By Genre
-    private ObservableList<Movie> filterByGenre(ObservableList<Movie> movies){
-        boolean isEmpty = genreComboBox.getSelectionModel().isEmpty();
-        if(isEmpty) return movies;
-        String comboboxValue = genreComboBox.getValue().toString();
-        return movies.filtered(movie -> movie.getGenresAsString().contains(comboboxValue));
+    protected ObservableList<Movie> filterByGenre(ObservableList<Movie> movies, String comboboxValue){
+        return comboboxValue.isEmpty() ? movies : movies.filtered(movie -> movie.getGenresAsString().contains(comboboxValue));
     }
 
     //Filter Movies By Title
-    private ObservableList<Movie> filterByTitle(ObservableList<Movie> movies){
-        String searchText = searchField.getText().toLowerCase();
-
-        return movies.filtered(movie -> movie.getTitle().toLowerCase().contains(searchText));
+    protected ObservableList<Movie> filterByTitle(ObservableList<Movie> movies, String searchText){
+        return movies.filtered(movie -> movie.getTitle().toLowerCase().contains(searchText.toLowerCase()));
     }
 
     @Override
@@ -77,17 +65,19 @@ public class HomeController implements Initializable {
                 Arrays.asList(Movie.genreEnum.values())
         );
 
-        // TODO add event handlers to buttons and call the regarding methods
+        // DONE add event handlers to buttons and call the regarding methods
         // either set event handlers in the fxml file (onAction) or add them here
 
         // Genre Filter
         genreComboBox.setOnAction(actionEvent -> {
-            movieListView.setItems(getMoviesWithAppliedFilters());
+            String genre = genreComboBox.getSelectionModel().isEmpty() ? "" : genreComboBox.getValue().toString();
+            movieListView.setItems(getMoviesWithAppliedFilters(observableMovies, sortBtn.getText(), genre, searchField.getText()));
         });
 
         // Sort
         sortBtn.setOnAction(actionEvent -> {
-            movieListView.setItems(getMoviesWithAppliedFilters());
+            String genre = genreComboBox.getSelectionModel().isEmpty() ? "" : genreComboBox.getValue().toString();
+            movieListView.setItems(getMoviesWithAppliedFilters(observableMovies, sortBtn.getText(), genre, searchField.getText()));
             if(sortBtn.getText().equals("Sort (asc)")) {
                 sortBtn.setText("Sort (desc)");
             } else {
@@ -97,12 +87,8 @@ public class HomeController implements Initializable {
 
         // Search (Title + Genre + Sort)
         searchBtn.setOnAction(actionEvent -> {
-            ObservableList<Movie> filteredByGenre = filterByGenre(observableMovies);
-
-            movieListView.setItems(filterByTitle(filteredByGenre));
-
-
-
+            String genre = genreComboBox.getSelectionModel().isEmpty() ? "" : genreComboBox.getValue().toString();
+            movieListView.setItems(getMoviesWithAppliedFilters(observableMovies, sortBtn.getText(), genre, searchField.getText()));
         });
 
     }

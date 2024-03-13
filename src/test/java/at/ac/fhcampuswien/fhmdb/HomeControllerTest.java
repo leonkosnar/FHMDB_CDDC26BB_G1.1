@@ -1,68 +1,81 @@
 package at.ac.fhcampuswien.fhmdb;
 
 import at.ac.fhcampuswien.fhmdb.models.Movie;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HomeControllerTest {
 
 
     @Test
     void sortByTitleAscending() {
-        // Arrange
-        List<Movie> allMovies = Movie.initializeMovies();
+        HomeController hc = new HomeController();
+        List<Movie> movies = new ArrayList<>();
+        ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
 
-        // Act
-        Collections.sort(allMovies, Comparator.comparing(Movie::getTitle));
+        movies.add(new Movie("A", "",
+                new ArrayList<>(Arrays.asList(Movie.genreEnum.ACTION))));
+        movies.add(new Movie("B", "",
+                new ArrayList<>(Arrays.asList(Movie.genreEnum.ADVENTURE))));
+        observableMovies.addAll(movies);
 
-        // Assert
-        assertEquals("Back to the Future", allMovies.get(0).getTitle(), "First movie should be 'Back to the Future'");
+        observableMovies = hc.getMoviesWithAppliedFilters(observableMovies, "Sort (asc)", "", "");
+        assertEquals("B", observableMovies.get(0).getTitle());
     }
 
     @Test
     void sortByTitleDescending() {
-        // Arrange
-        List<Movie> allMovies = Movie.initializeMovies();
+        HomeController hc = new HomeController();
+        List<Movie> movies = new ArrayList<>();
+        ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
 
-        // Act
-        Collections.sort(allMovies, Comparator.comparing(Movie::getTitle).reversed());
+        movies.add(new Movie("A", "",
+                new ArrayList<>(Arrays.asList(Movie.genreEnum.ACTION))));
+        movies.add(new Movie("B", "",
+                new ArrayList<>(Arrays.asList(Movie.genreEnum.ADVENTURE))));
+        observableMovies.addAll(movies);
 
-        // Assert
-        assertEquals("The Silence of the Lambs", allMovies.get(0).getTitle(), "First movie should be 'The Silence of the Lambs'");
+        observableMovies = hc.getMoviesWithAppliedFilters(observableMovies, "Sort (desc)", "", "");
+        assertEquals("A", observableMovies.get(0).getTitle());
     }
 
     @Test
-    void sortByGenre() {
-        // Arrange
-        List<Movie> allMovies = Movie.initializeMovies();
+    void filterByGenre() {
+        HomeController hc = new HomeController();
+        List<Movie> movies = new ArrayList<>();
+        ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
 
-        // Act
-        Collections.sort(allMovies, Comparator.comparing(movie -> movie.getGenresAsString()));
+        movies.add(new Movie("A", "",
+                new ArrayList<>(Arrays.asList(Movie.genreEnum.ACTION))));
+        movies.add(new Movie("B", "",
+                new ArrayList<>(Arrays.asList(Movie.genreEnum.ADVENTURE))));
+        observableMovies.addAll(movies);
 
-        // Assert
-        assertEquals("Star Wars: Episode I – The Phantom Menace", allMovies.get(0).getTitle(), "First movie should be 'Star Wars: Episode I – The Phantom Menace'");
+        observableMovies = hc.filterByGenre(observableMovies, Movie.genreEnum.ADVENTURE.name());
+        assertEquals("ADVENTURE", observableMovies.get(0).getGenresAsString());
     }
 
     @Test
     void searchMoviesByTitle() {
-        // Arrange
-        List<Movie> allMovies = Movie.initializeMovies();
-        String searchTerm = "Future";
+        HomeController hc = new HomeController();
+        List<Movie> movies = new ArrayList<>();
+        ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
 
-        // Act
-        List<Movie> searchResult = allMovies.stream()
-                .filter(movie -> movie.getTitle().contains(searchTerm))
-                .toList();
+        movies.add(new Movie("A", "",
+                new ArrayList<>(Arrays.asList(Movie.genreEnum.ACTION))));
+        movies.add(new Movie("B", "",
+                new ArrayList<>(Arrays.asList(Movie.genreEnum.ADVENTURE))));
+        movies.add(new Movie("C", "",
+                new ArrayList<>(Arrays.asList(Movie.genreEnum.DRAMA))));
+        observableMovies.addAll(movies);
 
-        // Assert
-        assertEquals(1, searchResult.size(), "Expected 1 movie containing 'Future' in the title");
-        assertEquals("Back to the Future", searchResult.get(0).getTitle());
+        observableMovies = hc.getMoviesWithAppliedFilters(observableMovies, "Sort (asc)", "", "B");
+        assertEquals("B", observableMovies.get(0).getTitle());
     }
-
-
 }
