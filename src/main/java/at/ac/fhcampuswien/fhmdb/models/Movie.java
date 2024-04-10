@@ -4,39 +4,63 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class    Movie {
+public class Movie {
+
+    private String id;
     private String title;
-    private String description;
     public enum genreEnum {
         ACTION, ADVENTURE, ANIMATION, BIOGRAPHY, COMEDY,
         CRIME, DRAMA, DOCUMENTARY, FAMILY, FANTASY, HISTORY, HORROR,
         MUSICAL, MYSTERY, ROMANCE, SCIENCE_FICTION, SPORT, THRILLER, WAR,
-        WESTERN, GOAT
+        WESTERN
     }
     private List<genreEnum> genres;
+    private int releaseYear;
+    private String description;
+    private String imgUrl;
+    private int lengthInMinutes;
+    private ArrayList<String> directors;
+    private ArrayList<String> writers;
+    private ArrayList<String> mainCast;
+    private int rating;
 
-    // TODO add more properties here
-
-    public Movie(String title, String description, List<genreEnum> genres) {
+    public Movie(String id, String title, List<genreEnum> genres, int releaseYear, String description, String imgUrl, int lengthInMinutes, ArrayList<String> directors, ArrayList<String> writers, ArrayList<String> mainCast, int rating) {
+        this.id = id;
         this.title = title;
-        this.description = description;
         this.genres = genres;
+        this.releaseYear = releaseYear;
+        this.description = description;
+        this.imgUrl = imgUrl;
+        this.lengthInMinutes = lengthInMinutes;
+        this.directors = directors;
+        this.writers = writers;
+        this.mainCast = mainCast;
+        this.rating = rating;
     }
 
+    public String getId() {return id;}
+    public String getTitle() {return title;}
+    public int getReleaseYear() {return releaseYear;}
+    public String getDescription() {return description;}
+    public String getImgUrl() {return imgUrl;}
+    public int getLengthInMinutes() {return lengthInMinutes;}
+    public int getRating() {return rating;}
 
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
 
     public String getGenresAsString() {
         return genres.stream().map(Enum::name).reduce((a, b) -> a + ", " + b).orElse("No Genre");
     }
+    public String getDirectorsAsString() {
+        return directors.stream().reduce((a, b) -> a + ", " + b).orElse("n/a");
+    }
+    public String getWritersAsString() {
+        return writers.stream().reduce((a, b) -> a + ", " + b).orElse("No Genre");
+    }
+    public String getMainCastAsString() {
+        return mainCast.stream().reduce((a, b) -> a + ", " + b).orElse("No Genre");
+    }
 
+    /*
     public static List<Movie> initializeMovies(){
         List<Movie> movies = new ArrayList<>();
         movies.add(new Movie("Star Wars: Episode I – The Phantom Menace", "Two Jedi escape a hostile blockade to find allies and come across a young boy who may bring balance to the Force, but the long dormant Sith resurface to claim their original glory.",
@@ -93,4 +117,5 @@ public class    Movie {
                    new ArrayList<>(Arrays.asList(genreEnum.DOCUMENTARY, genreEnum.SPORT, genreEnum.GOAT))));
         return movies;
     }
+    */
 }
