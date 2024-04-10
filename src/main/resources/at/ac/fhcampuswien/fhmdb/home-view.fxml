@@ -27,6 +27,8 @@
          <JFXButton fx:id="sortBtn" style="-fx-background-color: lightgray;" stylesheets="@styles.css" text="Sort (asc)" />
          <TextField fx:id="searchField" prefHeight="25.0" prefWidth="170.0" promptText="Search FHMDb" />
          <JFXComboBox fx:id="genreComboBox" focusColor="#f5c518" styleClass="filter-combo-box" stylesheets="@styles.css" />
+         <JFXComboBox fx:id="releaseYearComboBox" focusColor="#f5c518" layoutX="266.0" layoutY="30.0" styleClass="filter-combo-box" stylesheets="@styles.css" />
+         <JFXComboBox fx:id="ratingComboBox" focusColor="#f5c518" layoutX="327.0" layoutY="30.0" styleClass="filter-combo-box" stylesheets="@styles.css" />
          <JFXButton fx:id="searchBtn" style="-fx-background-color: lime;" styleClass="background-yellow" stylesheets="@styles.css" text="Search" />
       </children>
       <VBox.margin>
