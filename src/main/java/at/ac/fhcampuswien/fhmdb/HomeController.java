@@ -52,7 +52,19 @@ public class HomeController implements Initializable {
         return movies.filtered(movie -> movie.getTitle().toLowerCase().contains(searchText.toLowerCase()));
     }
     */
-    
+
+    // TODO gibt jene Person zurück, die am öftesten im mainCast der übergebenen Filme vorkommt.
+    String getMostPopularActor(List<Movie> movies){}
+
+    // TODO filtert auf den längsten Titel der übergebenen Filme und gibt die Anzahl der Buchstaben des Titels zurück
+    int getLongestMovieTitle(List<Movie> movies){}
+
+    // TODO gibt die Anzahl der Filme eines bestimmten Regisseurs zurück.
+    long countMoviesFrom(List<Movie> movies, String director){}
+
+    // TODO gibt jene Filme zurück, die zwischen zwei gegebenen Jahren veröffentlicht wurden.
+    List<Movie> getMoviesBetweenYears(List<Movie> movies, int startYear, int endYear){}
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         observableMovies.addAll(allMovies);         // add dummy data to observable list
