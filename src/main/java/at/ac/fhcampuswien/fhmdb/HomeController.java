@@ -41,6 +41,7 @@ public class HomeController implements Initializable {
 
     private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();   // automatically updates corresponding UI elements when underlying data changes
 
+    /*
     protected SortedList<Movie> getMoviesWithAppliedFilters(ObservableList<Movie> movies, String sort, String comboboxValue, String searchText){
         return sort.equals("Sort (asc)")
                 ? new SortedList<Movie>(filterByTitle(filterByGenre(movies, comboboxValue), searchText), Comparator.comparing(Movie::getTitle).reversed())
@@ -56,6 +57,19 @@ public class HomeController implements Initializable {
     protected ObservableList<Movie> filterByTitle(ObservableList<Movie> movies, String searchText){
         return movies.filtered(movie -> movie.getTitle().toLowerCase().contains(searchText.toLowerCase()));
     }
+    */
+
+    // TODO gibt jene Person zurück, die am öftesten im mainCast der übergebenen Filme vorkommt.
+    String getMostPopularActor(List<Movie> movies){}
+
+    // TODO filtert auf den längsten Titel der übergebenen Filme und gibt die Anzahl der Buchstaben des Titels zurück
+    int getLongestMovieTitle(List<Movie> movies){}
+
+    // TODO gibt die Anzahl der Filme eines bestimmten Regisseurs zurück.
+    long countMoviesFrom(List<Movie> movies, String director){}
+
+    // TODO gibt jene Filme zurück, die zwischen zwei gegebenen Jahren veröffentlicht wurden.
+    List<Movie> getMoviesBetweenYears(List<Movie> movies, int startYear, int endYear){}
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
