@@ -62,6 +62,21 @@ public class HomeController implements Initializable {
     }
     */
 
+
+    public static List<Genre> extractUniqueGenres(List<Movie> movies) {
+        Set<Genre> uniqueGenres = new HashSet<>();
+
+        for (Movie movie : movies) {
+            uniqueGenres.addAll(movie.getGenres());
+        }
+
+        List<Genre> sortedGenres = new ArrayList<>(uniqueGenres);
+        sortedGenres.sort(Comparator.comparing(Genre::name));
+
+        return sortedGenres;
+    }
+
+
     // TODO gibt jene Person zurück, die am öftesten im mainCast der übergebenen Filme vorkommt.
     public static String getMostPopularActor(List<Movie> movies) {
         // Validate the input list of movies
@@ -154,10 +169,13 @@ public class HomeController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         movieAPI = new MovieAPI();
         try {
-            observableMovies.addAll(movieAPI.getAllMovies(MovieAPI.BASE_URL));         // add dummy data to observable list
+            observableMovies.addAll(movieAPI.getAllMovies(MovieAPI.BASE_URL));
+            allMovies = observableMovies;
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
 
         // initialize UI stuff
         movieListView.setItems(observableMovies);   // set data of observable list to list view
@@ -169,9 +187,9 @@ public class HomeController implements Initializable {
 
         // add genre filter items with genreComboBox.getItems().addAll(...)
         genreComboBox.setPromptText("Filter by Genre");
-//        genreComboBox.getItems().addAll(
-//                Arrays.asList(Movie.genreEnum.values())
-//        );
+      genreComboBox.getItems().addAll(
+               extractUniqueGenres(allMovies)
+        );
 
         // DONE add event handlers to buttons and call the regarding methods
         // either set event handlers in the fxml file (onAction) or add them here

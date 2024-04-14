@@ -1,4 +1,5 @@
 package at.ac.fhcampuswien.fhmdb.utils;
+import at.ac.fhcampuswien.fhmdb.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 
 import com.google.gson.TypeAdapter;
@@ -28,9 +29,9 @@ public class MovieAdapter extends TypeAdapter<Movie>{
                 case "title":
                     movie.setTitle(in.nextString());
                     break;
-//                case "genres":
-//                    movie.setGenres(readGenres(in));
-//                    break;
+                case "genres":
+                    movie.setGenres(readGenres(in));
+                    break;
                 case "releaseYear":
                     movie.setReleaseYear(in.nextInt());
                     break;
@@ -71,5 +72,15 @@ public class MovieAdapter extends TypeAdapter<Movie>{
         }
         in.endArray();
         return (ArrayList<String>) list;
+    }
+    private static ArrayList<Genre> readGenres(JsonReader in) throws IOException {
+        ArrayList<Genre> genres = new ArrayList<>();
+        in.beginArray();
+        while (in.hasNext()) {
+            String genre = in.nextString();
+            genres.add(Genre.valueOf(genre.toUpperCase())); // Assuming genre strings are all upper case
+        }
+        in.endArray();
+        return genres;
     }
 }

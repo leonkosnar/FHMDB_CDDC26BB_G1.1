@@ -3,12 +3,13 @@ package at.ac.fhcampuswien.fhmdb.models;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import at.ac.fhcampuswien.fhmdb.Genre;
 
 public class Movie {
 
     private String id;
     private String title;
-    private ArrayList<String> genres;
+    public static ArrayList<Genre> genres;
     private int releaseYear;
     private String description;
     private String imgUrl;
@@ -18,7 +19,7 @@ public class Movie {
     private ArrayList<String> mainCast;
     private double rating;
 
-    public Movie(String id, String title,  ArrayList<String> genres, int releaseYear, String description, String imgUrl, int lengthInMinutes, ArrayList<String> directors, ArrayList<String> writers, ArrayList<String> mainCast, int rating) {
+    public Movie(String id, String title,  ArrayList<Genre> genres, int releaseYear, String description, String imgUrl, int lengthInMinutes, ArrayList<String> directors, ArrayList<String> writers, ArrayList<String> mainCast, int rating) {
         this.id = id;
         this.title = title;
         this.genres = genres;
@@ -44,7 +45,23 @@ public class Movie {
     public double getRating() {return rating;}
     public ArrayList<String> getMainCast() {return mainCast;}
     public ArrayList<String> getDirectors() {return directors;}
+    public ArrayList<Genre> getGenres(){
+        return genres;
+    };
 
+    public String getGenresAsString() {
+//        return genres.stream().map(Enum::name).reduce((a, b) -> a + ", " + b).orElse("No Genre");
+        return "";
+    }
+    public String getDirectorsAsString() {
+        return directors.stream().reduce((a, b) -> a + ", " + b).orElse("n/a");
+    }
+    public String getWritersAsString() {
+        return writers.stream().reduce((a, b) -> a + ", " + b).orElse("No Genre");
+    }
+    public String getMainCastAsString() {
+        return mainCast.stream().reduce((a, b) -> a + ", " + b).orElse("No Genre");
+    }
 
     public void setId(String id) {
         this.id = id;
@@ -54,7 +71,7 @@ public class Movie {
         this.title = title;
     }
 
-    public void setGenres(ArrayList<String> genres) {
+    public void setGenres(ArrayList<Genre> genres) {
         this.genres = genres;
     }
 
@@ -91,19 +108,7 @@ public class Movie {
     }
 
 
-    public String getGenresAsString() {
-//        return genres.stream().map(Enum::name).reduce((a, b) -> a + ", " + b).orElse("No Genre");
-    return "";
-    }
-    public String getDirectorsAsString() {
-        return directors.stream().reduce((a, b) -> a + ", " + b).orElse("n/a");
-    }
-    public String getWritersAsString() {
-        return writers.stream().reduce((a, b) -> a + ", " + b).orElse("No Genre");
-    }
-    public String getMainCastAsString() {
-        return mainCast.stream().reduce((a, b) -> a + ", " + b).orElse("No Genre");
-    }
+
 
 
     /*

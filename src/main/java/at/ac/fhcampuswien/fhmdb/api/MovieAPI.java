@@ -22,6 +22,7 @@ public class MovieAPI {
     }
 
     public List<Movie> getAllMovies(String endpoint) throws IOException {
+
         Type movieListType = new TypeToken<List<Movie>>(){}.getType();
 
         Gson gson = new GsonBuilder()
