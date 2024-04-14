@@ -14,26 +14,25 @@ import com.google.gson.GsonBuilder;
 import java.util.List;
 
 public class MovieAPI {
-    private static final String BASE_URL = "https://prog2.fh-campuswien.ac.at";
-    private static final String MOVIES_ENDPOINT = "/movies";
-
-    private final OkHttpClient httpClient;
-    private final Gson gson;
-    private final Type movieListType;
+    public static final String BASE_URL = "https://prog2.fh-campuswien.ac.at/movies";
 
 
     public MovieAPI() {
-        this.httpClient = new OkHttpClient();
-        this.gson = new GsonBuilder()
-                .registerTypeAdapter(Movie.class, new MovieAdapter())
-                .create();
-        this.movieListType = new TypeToken<List<Movie>>(){}.getType();
+
     }
 
-    public List<Movie> getAllMovies() throws IOException {
+    public List<Movie> getAllMovies(String endpoint) throws IOException {
+        Type movieListType = new TypeToken<List<Movie>>(){}.getType();
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Movie.class, new MovieAdapter())
+                .create();
+
+        OkHttpClient httpClient = new OkHttpClient();
+
 
         Request request = new Request.Builder()
-                .url(BASE_URL + MOVIES_ENDPOINT)
+                .url(endpoint)
                 .header("User-Agent", "http.agent")
                 .build();
 
@@ -45,10 +44,9 @@ public class MovieAPI {
             try (ResponseBody body = response.body()) {
                 if (body != null) {
                     String json = body.string();
-                        List<Movie> asd = gson.fromJson(json, movieListType);
-                    System.out.println("ASDASDASDASD====>");
-                    System.out.println(asd.get(0).getClass());
-                    return (List<Movie>) asd;
+
+                    return gson.fromJson(json, movieListType);
+
                 }
             }catch (Exception e){
                 e.printStackTrace();
@@ -60,8 +58,67 @@ public class MovieAPI {
       return null;
     }
 
-    public List<Movie> searchMovies(String query, String genre) throws IOException {
-        HttpUrl.Builder urlBuilder = HttpUrl.parse(BASE_URL + MOVIES_ENDPOINT).newBuilder();
+
+    public List<Movie> getMoviesByQuery(String endpoint, String query, int releaseYear, double ratingFrom){
+
+        String baseUrl = endpoint + "?";
+
+        Type movieListType = new TypeToken<List<Movie>>(){}.getType();
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Movie.class, new MovieAdapter())
+                .create();
+
+        OkHttpClient httpClient = new OkHttpClient();
+
+
+
+        if (query != null) baseUrl += "query=" + query + "&";
+        if (releaseYear > 0) baseUrl += "releaseYear=" + String.valueOf(releaseYear) + "&";
+        if(ratingFrom > 0) baseUrl += "ratingFrom=" + String.valueOf(ratingFrom) + "&";
+        // TODO: query build for genre
+
+
+        Request request = new Request.Builder()
+                .url(baseUrl)
+                .header("User-Agent", "http.agent")
+                .build();
+
+        try (Response response = httpClient.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                throw new IOException("Unexpected code " + response);
+            }
+
+            try (ResponseBody body = response.body()) {
+                if (body != null) {
+                    String json = body.string();
+
+                    return gson.fromJson(json, movieListType);
+
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+        }
+        catch (Exception ignored){ }
+
+        return null;
+    }
+
+    public List<Movie> searchMovies(String endpoint, String query, String genre) throws IOException {
+
+        Type movieListType = new TypeToken<List<Movie>>(){}.getType();
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Movie.class, new MovieAdapter())
+                .create();
+
+        OkHttpClient httpClient = new OkHttpClient();
+
+
+
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(endpoint).newBuilder();
         urlBuilder.addQueryParameter("query", query);
         urlBuilder.addQueryParameter("genre", genre);
         String url = urlBuilder.build().toString();

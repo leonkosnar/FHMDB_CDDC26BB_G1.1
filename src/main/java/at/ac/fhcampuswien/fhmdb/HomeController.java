@@ -154,7 +154,7 @@ public class HomeController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         movieAPI = new MovieAPI();
         try {
-            observableMovies.addAll(movieAPI.getAllMovies());         // add dummy data to observable list
+            observableMovies.addAll(movieAPI.getAllMovies(MovieAPI.BASE_URL));         // add dummy data to observable list
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
