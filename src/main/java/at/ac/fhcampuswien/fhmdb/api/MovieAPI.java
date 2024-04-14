@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import com.google.gson.GsonBuilder;
 import java.util.List;
 
-
 public class MovieAPI {
     private static final String BASE_URL = "https://prog2.fh-campuswien.ac.at";
     private static final String MOVIES_ENDPOINT = "/movies";
