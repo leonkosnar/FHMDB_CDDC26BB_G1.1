@@ -2,7 +2,9 @@ package at.ac.fhcampuswien.fhmdb.api;
 
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import okhttp3.*;
+import java.lang.reflect.Type;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,18 +16,23 @@ public class MovieAPI {
 
     private final OkHttpClient httpClient;
     private final Gson gson;
+    private final Type movieListType;
+
 
     public MovieAPI() {
         this.httpClient = new OkHttpClient();
         this.gson = new Gson();
+        this.movieListType = new TypeToken<List<Movie>>(){}.getType();
     }
 
     public List<Movie> getAllMovies() throws IOException {
         Request request = new Request.Builder()
                 .url(BASE_URL + MOVIES_ENDPOINT)
+                .header("User-Agent", "http.agent")
                 .build();
 
-        try (Response response = httpClient.newCall(request).execute()) {
+        try {
+            Response response = httpClient.newCall(request).execute();
             if (!response.isSuccessful()) {
                 throw new IOException("Unexpected code " + response);
             }
@@ -33,9 +40,11 @@ public class MovieAPI {
             ResponseBody body = response.body();
             if (body != null) {
                 String json = body.string();
-                return gson.fromJson(json, List.class);
+                System.out.println(json);
+                return gson.fromJson(json, movieListType);
             }
         }
+        catch (Exception ignored){}
 
         return null;
     }
@@ -48,9 +57,11 @@ public class MovieAPI {
 
         Request request = new Request.Builder()
                 .url(url)
+                .header("User-Agent", "http.agent")
                 .build();
 
-        try (Response response = httpClient.newCall(request).execute()) {
+        try{
+            Response response = httpClient.newCall(request).execute();
             if (!response.isSuccessful()) {
                 throw new IOException("Unexpected code " + response);
             }
@@ -58,9 +69,9 @@ public class MovieAPI {
             ResponseBody body = response.body();
             if (body != null) {
                 String json = body.string();
-                return gson.fromJson(json, List.class);
+                return gson.fromJson(json, movieListType);
             }
-        }
+        }catch (Exception ignored){}
 
         return null;
     }
