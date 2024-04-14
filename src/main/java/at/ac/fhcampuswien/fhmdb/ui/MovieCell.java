@@ -23,10 +23,13 @@ public class MovieCell extends ListCell<Movie> {
             setGraphic(null);
         } else {
             this.getStyleClass().add("movie-cell");
-            title.setText(movie.getTitle());
+            title.setText(movie.getTitle() + " : " + movie.getRating() + " - " + movie.getLengthInMinutes() + "min" + " | " + movie.getReleaseYear());
 
             String movieDetails = (movie.getDescription() != null ? movie.getDescription() : "No description available")
-                    + "\n\nGenres: " + movie.getGenresAsString();
+                    + "\n\nGenres: " + movie.getGenresAsString()
+                    + "\n\nDirectors: " + movie.getDirectorsAsString()
+                    + "\n\nWriters: " + movie.getWritersAsString()
+                    + "\n\nCast: " + movie.getMainCastAsString();
 
             detail.setText(movieDetails);
             setGraphic(layout);
