@@ -8,13 +8,7 @@ public class Movie {
 
     private String id;
     private String title;
-    public enum genreEnum {
-        ACTION, ADVENTURE, ANIMATION, BIOGRAPHY, COMEDY,
-        CRIME, DRAMA, DOCUMENTARY, FAMILY, FANTASY, HISTORY, HORROR,
-        MUSICAL, MYSTERY, ROMANCE, SCIENCE_FICTION, SPORT, THRILLER, WAR,
-        WESTERN
-    }
-    private List<genreEnum> genres;
+    private ArrayList<String> genres;
     private int releaseYear;
     private String description;
     private String imgUrl;
@@ -22,9 +16,9 @@ public class Movie {
     private ArrayList<String> directors;
     private ArrayList<String> writers;
     private ArrayList<String> mainCast;
-    private int rating;
+    private double rating;
 
-    public Movie(String id, String title, List<genreEnum> genres, int releaseYear, String description, String imgUrl, int lengthInMinutes, ArrayList<String> directors, ArrayList<String> writers, ArrayList<String> mainCast, int rating) {
+    public Movie(String id, String title,  ArrayList<String> genres, int releaseYear, String description, String imgUrl, int lengthInMinutes, ArrayList<String> directors, ArrayList<String> writers, ArrayList<String> mainCast, int rating) {
         this.id = id;
         this.title = title;
         this.genres = genres;
@@ -38,17 +32,66 @@ public class Movie {
         this.rating = rating;
     }
 
+    public Movie(){
+
+    }
     public String getId() {return id;}
     public String getTitle() {return title;}
     public int getReleaseYear() {return releaseYear;}
     public String getDescription() {return description;}
     public String getImgUrl() {return imgUrl;}
     public int getLengthInMinutes() {return lengthInMinutes;}
-    public int getRating() {return rating;}
+    public double getRating() {return rating;}
+
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setGenres(ArrayList<String> genres) {
+        this.genres = genres;
+    }
+
+    public void setReleaseYear(int releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    public void setLengthInMinutes(int lengthInMinutes) {
+        this.lengthInMinutes = lengthInMinutes;
+    }
+
+    public void setDirectors(ArrayList<String> directors) {
+        this.directors = directors;
+    }
+
+    public void setWriters(ArrayList<String> writers) {
+        this.writers = writers;
+    }
+
+    public void setMainCast(ArrayList<String> mainCast) {
+        this.mainCast = mainCast;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
 
 
     public String getGenresAsString() {
-        return genres.stream().map(Enum::name).reduce((a, b) -> a + ", " + b).orElse("No Genre");
+//        return genres.stream().map(Enum::name).reduce((a, b) -> a + ", " + b).orElse("No Genre");
+    return "";
     }
     public String getDirectorsAsString() {
         return directors.stream().reduce((a, b) -> a + ", " + b).orElse("n/a");

@@ -1,12 +1,16 @@
 package at.ac.fhcampuswien.fhmdb.api;
 
 import at.ac.fhcampuswien.fhmdb.models.Movie;
+import at.ac.fhcampuswien.fhmdb.utils.MovieAdapter;
 import com.google.gson.Gson;
+
 import com.google.gson.reflect.TypeToken;
 import okhttp3.*;
 import java.lang.reflect.Type;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import com.google.gson.GsonBuilder;
 import java.util.List;
 
 
@@ -21,32 +25,40 @@ public class MovieAPI {
 
     public MovieAPI() {
         this.httpClient = new OkHttpClient();
-        this.gson = new Gson();
+        this.gson = new GsonBuilder()
+                .registerTypeAdapter(Movie.class, new MovieAdapter())
+                .create();
         this.movieListType = new TypeToken<List<Movie>>(){}.getType();
     }
 
     public List<Movie> getAllMovies() throws IOException {
+
         Request request = new Request.Builder()
                 .url(BASE_URL + MOVIES_ENDPOINT)
                 .header("User-Agent", "http.agent")
                 .build();
 
-        try {
-            Response response = httpClient.newCall(request).execute();
+        try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 throw new IOException("Unexpected code " + response);
             }
 
-            ResponseBody body = response.body();
-            if (body != null) {
-                String json = body.string();
-                System.out.println(json);
-                return gson.fromJson(json, movieListType);
+            try (ResponseBody body = response.body()) {
+                if (body != null) {
+                    String json = body.string();
+                        List<Movie> asd = gson.fromJson(json, movieListType);
+                    System.out.println("ASDASDASDASD====>");
+                    System.out.println(asd.get(0).getClass());
+                    return (List<Movie>) asd;
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
-        }
-        catch (Exception ignored){}
 
-        return null;
+        }
+        catch (Exception ignored){ }
+
+      return null;
     }
 
     public List<Movie> searchMovies(String query, String genre) throws IOException {
