@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb;
 
+import at.ac.fhcampuswien.fhmdb.api.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
 import com.jfoenix.controls.JFXButton;
@@ -12,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -37,7 +39,8 @@ public class HomeController implements Initializable {
     @FXML
     public JFXButton sortBtn;
 
-    public List<Movie> allMovies = Movie.initializeMovies();
+    public List<Movie> allMovies;
+    private MovieAPI movieAPI;
 
     private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();   // automatically updates corresponding UI elements when underlying data changes
 
@@ -58,7 +61,7 @@ public class HomeController implements Initializable {
         return movies.filtered(movie -> movie.getTitle().toLowerCase().contains(searchText.toLowerCase()));
     }
     */
-
+/*
     // TODO gibt jene Person zurück, die am öftesten im mainCast der übergebenen Filme vorkommt.
     String getMostPopularActor(List<Movie> movies){}
 
@@ -70,10 +73,15 @@ public class HomeController implements Initializable {
 
     // TODO gibt jene Filme zurück, die zwischen zwei gegebenen Jahren veröffentlicht wurden.
     List<Movie> getMoviesBetweenYears(List<Movie> movies, int startYear, int endYear){}
-
+*/
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        observableMovies.addAll(allMovies);         // add dummy data to observable list
+        movieAPI = new MovieAPI();
+        try {
+            observableMovies.addAll(movieAPI.getAllMovies());         // add dummy data to observable list
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         // initialize UI stuff
         movieListView.setItems(observableMovies);   // set data of observable list to list view
@@ -94,12 +102,15 @@ public class HomeController implements Initializable {
 
         // Genre Filter
         genreComboBox.setOnAction(actionEvent -> {
+            /*
             String genre = genreComboBox.getSelectionModel().isEmpty() ? "" : genreComboBox.getValue().toString();
             movieListView.setItems(getMoviesWithAppliedFilters(observableMovies, sortBtn.getText(), genre, searchField.getText()));
+            */
         });
 
         // Sort
         sortBtn.setOnAction(actionEvent -> {
+            /*
             String genre = genreComboBox.getSelectionModel().isEmpty() ? "" : genreComboBox.getValue().toString();
             movieListView.setItems(getMoviesWithAppliedFilters(observableMovies, sortBtn.getText(), genre, searchField.getText()));
             if(sortBtn.getText().equals("Sort (asc)")) {
@@ -107,13 +118,15 @@ public class HomeController implements Initializable {
             } else {
                 sortBtn.setText("Sort (asc)");
             }
+            */
         });
 
         // Search (Title + Genre + Sort)
         searchBtn.setOnAction(actionEvent -> {
+            /*
             String genre = genreComboBox.getSelectionModel().isEmpty() ? "" : genreComboBox.getValue().toString();
             movieListView.setItems(getMoviesWithAppliedFilters(observableMovies, sortBtn.getText(), genre, searchField.getText()));
+            */
         });
-
     }
 }
