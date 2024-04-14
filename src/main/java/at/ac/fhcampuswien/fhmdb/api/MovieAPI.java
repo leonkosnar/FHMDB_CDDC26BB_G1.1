@@ -29,11 +29,6 @@ public class MovieAPI {
     }
 
     public List<Movie> getAllMovies() throws IOException {
-        List<Movie> movies = new ArrayList<>();
-        // Movie(String id, String title, ArrayList<String> genres, int releaseYear, String description, String imgUrl, int lengthInMinutes, ArrayList<String> directors, ArrayList<String> writers, ArrayList<String> mainCast, float rating)
-        movies.add(new Movie("abc123", "Test", new ArrayList<>(Arrays.asList("ACTION")), 2020, "desc test test 123", "url", 10, new ArrayList<>(Arrays.asList("Leonardo Davinci")), new ArrayList<>(Arrays.asList("megatron")), new ArrayList<>(Arrays.asList("megatron")), 9.9));
-        return movies;
-        /*
         Request request = new Request.Builder()
                 .url(BASE_URL + MOVIES_ENDPOINT)
                 .header("User-Agent", "http.agent")

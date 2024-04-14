@@ -4,6 +4,7 @@
 
 .move-cell-title{
     -fx-text-fill: orange;
+    -fx-margin: 10;
 }
 
 .list-view .list-cell:even {
