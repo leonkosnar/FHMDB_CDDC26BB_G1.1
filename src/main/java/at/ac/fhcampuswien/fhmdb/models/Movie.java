@@ -8,13 +8,7 @@ public class Movie {
 
     private String id;
     private String title;
-    public enum genreEnum {
-        ACTION, ADVENTURE, ANIMATION, BIOGRAPHY, COMEDY,
-        CRIME, DRAMA, DOCUMENTARY, FAMILY, FANTASY, HISTORY, HORROR,
-        MUSICAL, MYSTERY, ROMANCE, SCIENCE_FICTION, SPORT, THRILLER, WAR,
-        WESTERN
-    }
-    private List<genreEnum> genres;
+    private ArrayList<String> genres;
     private int releaseYear;
     private String description;
     private String imgUrl;
@@ -22,9 +16,9 @@ public class Movie {
     private ArrayList<String> directors;
     private ArrayList<String> writers;
     private ArrayList<String> mainCast;
-    private int rating;
+    private double rating;
 
-    public Movie(String id, String title, List<genreEnum> genres, int releaseYear, String description, String imgUrl, int lengthInMinutes, ArrayList<String> directors, ArrayList<String> writers, ArrayList<String> mainCast, int rating) {
+    public Movie(String id, String title, ArrayList<String> genres, int releaseYear, String description, String imgUrl, int lengthInMinutes, ArrayList<String> directors, ArrayList<String> writers, ArrayList<String> mainCast, double rating) {
         this.id = id;
         this.title = title;
         this.genres = genres;
@@ -44,20 +38,20 @@ public class Movie {
     public String getDescription() {return description;}
     public String getImgUrl() {return imgUrl;}
     public int getLengthInMinutes() {return lengthInMinutes;}
-    public int getRating() {return rating;}
+    public double getRating() {return rating;}
 
 
     public String getGenresAsString() {
-        return genres.stream().map(Enum::name).reduce((a, b) -> a + ", " + b).orElse("No Genre");
+        return genres.stream().reduce((a, b) -> a + ", " + b).orElse("n/a");
     }
     public String getDirectorsAsString() {
         return directors.stream().reduce((a, b) -> a + ", " + b).orElse("n/a");
     }
     public String getWritersAsString() {
-        return writers.stream().reduce((a, b) -> a + ", " + b).orElse("No Genre");
+        return writers.stream().reduce((a, b) -> a + ", " + b).orElse("n/a");
     }
     public String getMainCastAsString() {
-        return mainCast.stream().reduce((a, b) -> a + ", " + b).orElse("No Genre");
+        return mainCast.stream().reduce((a, b) -> a + ", " + b).orElse("n/a");
     }
 
     /*

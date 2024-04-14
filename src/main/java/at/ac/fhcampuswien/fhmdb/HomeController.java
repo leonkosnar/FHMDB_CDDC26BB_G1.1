@@ -94,7 +94,7 @@ public class HomeController implements Initializable {
         // add genre filter items with genreComboBox.getItems().addAll(...)
         genreComboBox.setPromptText("Filter by Genre");
         genreComboBox.getItems().addAll(
-                Arrays.asList(Movie.genreEnum.values())
+                //Arrays.asList(Movie.genreEnum.values())
         );
 
         // DONE add event handlers to buttons and call the regarding methods

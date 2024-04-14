@@ -7,7 +7,10 @@ import okhttp3.*;
 import java.lang.reflect.Type;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 
 public class MovieAPI {
@@ -26,6 +29,11 @@ public class MovieAPI {
     }
 
     public List<Movie> getAllMovies() throws IOException {
+        List<Movie> movies = new ArrayList<>();
+        // Movie(String id, String title, ArrayList<String> genres, int releaseYear, String description, String imgUrl, int lengthInMinutes, ArrayList<String> directors, ArrayList<String> writers, ArrayList<String> mainCast, float rating)
+        movies.add(new Movie("abc123", "Test", new ArrayList<>(Arrays.asList("ACTION")), 2020, "desc test test 123", "url", 10, new ArrayList<>(Arrays.asList("Leonardo Davinci")), new ArrayList<>(Arrays.asList("megatron")), new ArrayList<>(Arrays.asList("megatron")), 9.9));
+        return movies;
+        /*
         Request request = new Request.Builder()
                 .url(BASE_URL + MOVIES_ENDPOINT)
                 .header("User-Agent", "http.agent")
@@ -40,13 +48,17 @@ public class MovieAPI {
             ResponseBody body = response.body();
             if (body != null) {
                 String json = body.string();
+                System.out.println("JSON:");
                 System.out.println(json);
-                return gson.fromJson(json, movieListType);
+                System.out.println("ARRAY:");
+                System.out.println(gson.fromJson(json, Movie.class));
+                return List.of(gson.fromJson(json, Movie[].class));
             }
         }
         catch (Exception ignored){}
 
         return null;
+         */
     }
 
     public List<Movie> searchMovies(String query, String genre) throws IOException {
