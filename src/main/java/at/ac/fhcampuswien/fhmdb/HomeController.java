@@ -61,19 +61,95 @@ public class HomeController implements Initializable {
         return movies.filtered(movie -> movie.getTitle().toLowerCase().contains(searchText.toLowerCase()));
     }
     */
-/*
+
     // TODO gibt jene Person zurück, die am öftesten im mainCast der übergebenen Filme vorkommt.
-    String getMostPopularActor(List<Movie> movies){}
+    public static String getMostPopularActor(List<Movie> movies) {
+        // Validate the input list of movies
+        if (movies == null || movies.isEmpty()) {
+            return ""; // Return an empty string if the list is null or empty
+        }
+
+        // Create a map to store each actor's name and their occurrences
+        Map<String, Long> actorNameToOccurrencesMap = new HashMap<>();
+
+        // Iterate through each movie in the list
+        for (Movie movie : movies) {
+            // Check if the movie's main cast is not empty
+            if (movie.getMainCast() != null && !movie.getMainCast().isEmpty()) {
+                // Iterate through each actor in the main cast
+                for (String actor : movie.getMainCast()) {
+                    // Increment the occurrence count of the actor in the map
+                    actorNameToOccurrencesMap.put(actor, actorNameToOccurrencesMap.getOrDefault(actor, 0L) + 1);
+                }
+            }
+        }
+
+        // Find the actor with the maximum occurrence count
+        Optional<Map.Entry<String, Long>> mostPopularActorEntry = actorNameToOccurrencesMap.entrySet().stream()
+                .max(Map.Entry.comparingByValue());
+
+        // Return the name of the most popular actor, or an empty string if no actor is found
+        return mostPopularActorEntry.map(Map.Entry::getKey).orElse("");
+    }
+
+
+
 
     // TODO filtert auf den längsten Titel der übergebenen Filme und gibt die Anzahl der Buchstaben des Titels zurück
-    int getLongestMovieTitle(List<Movie> movies){}
+    public static int getLongestMovieTitle(List<Movie> movies) {
+        if (movies == null || movies.isEmpty()) {
+            return 0;
+        }
+
+        int maxLength = 0;
+        for (Movie movie : movies) {
+            String title = movie.getTitle();
+            if (title != null && !title.trim().isEmpty()) {
+                maxLength = Math.max(maxLength, title.trim().length());
+            }
+        }
+        return maxLength;
+    }
+
+
 
     // TODO gibt die Anzahl der Filme eines bestimmten Regisseurs zurück.
-    long countMoviesFrom(List<Movie> movies, String director){}
+    public static long countMoviesFrom(List<Movie> movies, String director) {
+        if (movies == null || movies.isEmpty() || director == null || director.trim().isEmpty()) {
+            return 0;
+        }
+
+        long count = 0;
+        for (Movie movie : movies) {
+            List<String> directors = movie.getDirectors();
+            if (directors != null && !directors.isEmpty()) {
+                for (String dir : directors) {
+                    if (dir != null && dir.trim().equalsIgnoreCase(director.trim())) {
+                        count++;
+                        break; // Break from inner loop once director is found
+                    }
+                }
+            }
+        }
+        return count;
+    }
 
     // TODO gibt jene Filme zurück, die zwischen zwei gegebenen Jahren veröffentlicht wurden.
-    List<Movie> getMoviesBetweenYears(List<Movie> movies, int startYear, int endYear){}
-*/
+    public static List<Movie> getMoviesBetweenYears(List<Movie> movies, int startYear, int endYear) {
+        if (movies == null || movies.isEmpty() || startYear > endYear) {
+            return new ArrayList<>();
+        }
+
+        List<Movie> result = new ArrayList<>();
+        for (Movie movie : movies) {
+            int releaseYear = movie.getReleaseYear();
+            if (releaseYear >= startYear && releaseYear <= endYear) {
+                result.add(movie);
+            }
+        }
+        return result;
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         movieAPI = new MovieAPI();

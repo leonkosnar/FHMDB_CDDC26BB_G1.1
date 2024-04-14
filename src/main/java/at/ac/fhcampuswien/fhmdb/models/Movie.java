@@ -42,6 +42,8 @@ public class Movie {
     public String getImgUrl() {return imgUrl;}
     public int getLengthInMinutes() {return lengthInMinutes;}
     public double getRating() {return rating;}
+    public ArrayList<String> getMainCast() {return mainCast;}
+    public ArrayList<String> getDirectors() {return directors;}
 
 
     public void setId(String id) {
@@ -102,6 +104,7 @@ public class Movie {
     public String getMainCastAsString() {
         return mainCast.stream().reduce((a, b) -> a + ", " + b).orElse("No Genre");
     }
+
 
     /*
     public static List<Movie> initializeMovies(){
