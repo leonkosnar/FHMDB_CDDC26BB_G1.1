@@ -9,7 +9,7 @@ public class Movie {
 
     private String id;
     private String title;
-    public static ArrayList<Genre> genres;
+    public  ArrayList<Genre> genres;
     private int releaseYear;
     private String description;
     private String imgUrl;
@@ -50,8 +50,8 @@ public class Movie {
     };
 
     public String getGenresAsString() {
-//        return genres.stream().map(Enum::name).reduce((a, b) -> a + ", " + b).orElse("No Genre");
-        return "";
+        return genres.stream().map(Enum::name).reduce((a, b) -> a + ", " + b).orElse("No Genre");
+
     }
     public String getDirectorsAsString() {
         return directors.stream().reduce((a, b) -> a + ", " + b).orElse("n/a");

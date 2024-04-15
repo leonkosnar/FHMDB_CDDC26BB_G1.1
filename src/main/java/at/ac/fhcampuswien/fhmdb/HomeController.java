@@ -16,6 +16,8 @@ import javafx.scene.control.TextField;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -114,7 +116,12 @@ public class HomeController implements Initializable {
         for (Movie movie : movies) {
             years.add(movie.getReleaseYear());
         }
-        return new ArrayList<>(years);
+
+        ArrayList<Integer> yearsList = new ArrayList<>(years);
+        Collections.sort(yearsList, Collections.reverseOrder());
+
+
+        return yearsList;
     }
 
 }
