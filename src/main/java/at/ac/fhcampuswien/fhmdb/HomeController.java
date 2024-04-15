@@ -1,21 +1,23 @@
 package at.ac.fhcampuswien.fhmdb;
 
-import at.ac.fhcampuswien.fhmdb.api.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
+import at.ac.fhcampuswien.fhmdb.api.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.TextField;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 public class HomeController implements Initializable {
     @FXML
@@ -25,149 +27,30 @@ public class HomeController implements Initializable {
     public TextField searchField;
 
     @FXML
-    public JFXListView movieListView;
+    public JFXListView<Movie> movieListView;
 
     @FXML
-    public JFXComboBox genreComboBox;
+    public JFXComboBox<Genre> genreComboBox;
 
     @FXML
-    public JFXComboBox releaseYearComboBox;
+    public JFXComboBox<Integer> releaseYearComboBox;
 
     @FXML
-    public JFXComboBox ratingComboBox;
+    public JFXComboBox<Integer> ratingComboBox;
 
     @FXML
     public JFXButton sortBtn;
 
-    public List<Movie> allMovies;
     private MovieAPI movieAPI;
-
-    private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();   // automatically updates corresponding UI elements when underlying data changes
-
-    /*
-    protected SortedList<Movie> getMoviesWithAppliedFilters(ObservableList<Movie> movies, String sort, String comboboxValue, String searchText){
-        return sort.equals("Sort (asc)")
-                ? new SortedList<Movie>(filterByTitle(filterByGenre(movies, comboboxValue), searchText), Comparator.comparing(Movie::getTitle).reversed())
-                : new SortedList<Movie>(filterByTitle(filterByGenre(movies, comboboxValue), searchText), Comparator.comparing(Movie::getTitle));
-    }
-
-    //Filter Movies By Genre
-    protected ObservableList<Movie> filterByGenre(ObservableList<Movie> movies, String comboboxValue){
-        return comboboxValue.isEmpty() ? movies : movies.filtered(movie -> movie.getGenresAsString().contains(comboboxValue));
-    }
-
-    //Filter Movies By Title
-    protected ObservableList<Movie> filterByTitle(ObservableList<Movie> movies, String searchText){
-        return movies.filtered(movie -> movie.getTitle().toLowerCase().contains(searchText.toLowerCase()));
-    }
-    */
-
-
-    public static List<Genre> extractUniqueGenres(List<Movie> movies) {
-        Set<Genre> uniqueGenres = new HashSet<>();
-
-        for (Movie movie : movies) {
-            uniqueGenres.addAll(movie.getGenres());
-        }
-
-        List<Genre> sortedGenres = new ArrayList<>(uniqueGenres);
-        sortedGenres.sort(Comparator.comparing(Genre::name));
-
-        return sortedGenres;
-    }
-
-
-    // TODO gibt jene Person zurück, die am öftesten im mainCast der übergebenen Filme vorkommt.
-    public static String getMostPopularActor(List<Movie> movies) {
-        // Validate the input list of movies
-        if (movies == null || movies.isEmpty()) {
-            return ""; // Return an empty string if the list is null or empty
-        }
-
-        // Create a map to store each actor's name and their occurrences
-        Map<String, Long> actorNameToOccurrencesMap = new HashMap<>();
-
-        // Iterate through each movie in the list
-        for (Movie movie : movies) {
-            // Check if the movie's main cast is not empty
-            if (movie.getMainCast() != null && !movie.getMainCast().isEmpty()) {
-                // Iterate through each actor in the main cast
-                for (String actor : movie.getMainCast()) {
-                    // Increment the occurrence count of the actor in the map
-                    actorNameToOccurrencesMap.put(actor, actorNameToOccurrencesMap.getOrDefault(actor, 0L) + 1);
-                }
-            }
-        }
-
-        // Find the actor with the maximum occurrence count
-        Optional<Map.Entry<String, Long>> mostPopularActorEntry = actorNameToOccurrencesMap.entrySet().stream()
-                .max(Map.Entry.comparingByValue());
-
-        // Return the name of the most popular actor, or an empty string if no actor is found
-        return mostPopularActorEntry.map(Map.Entry::getKey).orElse("");
-    }
-
-
-
-
-    // TODO filtert auf den längsten Titel der übergebenen Filme und gibt die Anzahl der Buchstaben des Titels zurück
-    public static int getLongestMovieTitle(List<Movie> movies) {
-        if (movies == null || movies.isEmpty()) {
-            return 0;
-        }
-
-        int maxLength = 0;
-        for (Movie movie : movies) {
-            String title = movie.getTitle();
-            if (title != null && !title.trim().isEmpty()) {
-                maxLength = Math.max(maxLength, title.trim().length());
-            }
-        }
-        return maxLength;
-    }
-
-
-
-    // TODO gibt die Anzahl der Filme eines bestimmten Regisseurs zurück.
-    public static long countMoviesFrom(List<Movie> movies, String director) {
-        if (movies == null || movies.isEmpty() || director == null || director.trim().isEmpty()) {
-            return 0;
-        }
-
-        long count = 0;
-        for (Movie movie : movies) {
-            List<String> directors = movie.getDirectors();
-            if (directors != null && !directors.isEmpty()) {
-                for (String dir : directors) {
-                    if (dir != null && dir.trim().equalsIgnoreCase(director.trim())) {
-                        count++;
-                        break; // Break from inner loop once director is found
-                    }
-                }
-            }
-        }
-        return count;
-    }
-
-    // TODO gibt jene Filme zurück, die zwischen zwei gegebenen Jahren veröffentlicht wurden.
-    public static List<Movie> getMoviesBetweenYears(List<Movie> movies, int startYear, int endYear) {
-        if (movies == null || movies.isEmpty() || startYear > endYear) {
-            return new ArrayList<>();
-        }
-
-        List<Movie> result = new ArrayList<>();
-        for (Movie movie : movies) {
-            int releaseYear = movie.getReleaseYear();
-            if (releaseYear >= startYear && releaseYear <= endYear) {
-                result.add(movie);
-            }
-        }
-        return result;
-    }
+    private ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         movieAPI = new MovieAPI();
+        genreComboBox.setPromptText("Filter by Genre");
+        releaseYearComboBox.setPromptText("Filter by Release Year");
+        ratingComboBox.setPromptText("Filter by Rating");
+        ObservableList<Movie> allMovies;
         try {
             observableMovies.addAll(movieAPI.getAllMovies(MovieAPI.BASE_URL));
             allMovies = observableMovies;
@@ -177,50 +60,61 @@ public class HomeController implements Initializable {
         }
 
 
-        // initialize UI stuff
         movieListView.setItems(observableMovies);   // set data of observable list to list view
         movieListView.setCellFactory(movieListView -> new MovieCell()); // use custom cell factory to display data
 
 
-        releaseYearComboBox.setPromptText("Filter by Release Year");
-        ratingComboBox.setPromptText("Filter by Rating");
+        List<Integer> years = extractReleaseYears(allMovies);
+        releaseYearComboBox.getItems().addAll(years);
 
-        // add genre filter items with genreComboBox.getItems().addAll(...)
-        genreComboBox.setPromptText("Filter by Genre");
-      genreComboBox.getItems().addAll(
-               extractUniqueGenres(allMovies)
-        );
 
-        // DONE add event handlers to buttons and call the regarding methods
-        // either set event handlers in the fxml file (onAction) or add them here
+        for (int rating = 0; rating <= 10; rating++) {
+            ratingComboBox.getItems().add(rating);
+        }
 
-        // Genre Filter
-        genreComboBox.setOnAction(actionEvent -> {
-            /*
-            String genre = genreComboBox.getSelectionModel().isEmpty() ? "" : genreComboBox.getValue().toString();
-            movieListView.setItems(getMoviesWithAppliedFilters(observableMovies, sortBtn.getText(), genre, searchField.getText()));
-            */
-        });
+        genreComboBox.getItems().addAll(Genre.values());
 
-        // Sort
-        sortBtn.setOnAction(actionEvent -> {
-            /*
-            String genre = genreComboBox.getSelectionModel().isEmpty() ? "" : genreComboBox.getValue().toString();
-            movieListView.setItems(getMoviesWithAppliedFilters(observableMovies, sortBtn.getText(), genre, searchField.getText()));
-            if(sortBtn.getText().equals("Sort (asc)")) {
-                sortBtn.setText("Sort (desc)");
-            } else {
-                sortBtn.setText("Sort (asc)");
-            }
-            */
-        });
 
-        // Search (Title + Genre + Sort)
         searchBtn.setOnAction(actionEvent -> {
-            /*
-            String genre = genreComboBox.getSelectionModel().isEmpty() ? "" : genreComboBox.getValue().toString();
-            movieListView.setItems(getMoviesWithAppliedFilters(observableMovies, sortBtn.getText(), genre, searchField.getText()));
-            */
+            updateMovieList();
         });
+        AtomicBoolean ascendingOrder = new AtomicBoolean(true);
+
+        sortBtn.setOnAction(actionEvent -> {
+            ObservableList<Movie> sortedMovies = FXCollections.observableArrayList(movieListView.getItems());
+
+
+            ascendingOrder.set(!ascendingOrder.get());
+
+            if (ascendingOrder.get()) {
+                Collections.sort(sortedMovies, Comparator.comparing(Movie::getTitle));
+                sortBtn.setText("Sort (asc)");
+            } else {
+                Collections.sort(sortedMovies, Comparator.comparing(Movie::getTitle).reversed());
+                sortBtn.setText("Sort (desc)");
+            }
+
+            movieListView.setItems(sortedMovies);
+        });
+
     }
+
+    private void updateMovieList() {
+        String query = searchField.getText();
+        int releaseYear = releaseYearComboBox.getValue() != null ? releaseYearComboBox.getValue() : 0;
+        double ratingFrom = ratingComboBox.getValue() != null ? ratingComboBox.getValue() : 0.0;
+        Genre genre = genreComboBox.getValue() != null ? (Genre) genreComboBox.getValue() : null;
+
+
+        observableMovies.setAll(movieAPI.getMoviesByQuery(MovieAPI.BASE_URL, query, releaseYear, ratingFrom, genre != null ? genre.name() : null));
+    }
+
+    private List<Integer> extractReleaseYears(List<Movie> movies) {
+        Set<Integer> years = new HashSet<>();
+        for (Movie movie : movies) {
+            years.add(movie.getReleaseYear());
+        }
+        return new ArrayList<>(years);
+    }
+
 }

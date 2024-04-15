@@ -1,70 +1,61 @@
 package at.ac.fhcampuswien.fhmdb.api;
 
 import at.ac.fhcampuswien.fhmdb.models.Movie;
+import at.ac.fhcampuswien.fhmdb.api.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.utils.MovieAdapter;
 import com.google.gson.Gson;
-
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import okhttp3.*;
-import java.lang.reflect.Type;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
-import com.google.gson.GsonBuilder;
 import java.util.List;
 
 public class MovieAPI {
     public static final String BASE_URL = "https://prog2.fh-campuswien.ac.at/movies";
 
-
     public MovieAPI() {
-
     }
 
     public List<Movie> getAllMovies(String endpoint) throws IOException {
+        Type movieListType = new TypeToken<List<Movie>>() {
+        }.getType();
+        Gson gson = new GsonBuilder().create();
 
-        Type movieListType = new TypeToken<List<Movie>>(){}.getType();
+        HttpURLConnection connection = (HttpURLConnection) new URL(endpoint).openConnection();
+        connection.setRequestMethod("GET");
+        connection.connect();
 
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Movie.class, new MovieAdapter())
-                .create();
-
-        OkHttpClient httpClient = new OkHttpClient();
-
-
-        Request request = new Request.Builder()
-                .url(endpoint)
-                .header("User-Agent", "http.agent")
-                .build();
-
-        try (Response response = httpClient.newCall(request).execute()) {
-            if (!response.isSuccessful()) {
-                throw new IOException("Unexpected code " + response);
-            }
-
-            try (ResponseBody body = response.body()) {
-                if (body != null) {
-                    String json = body.string();
-
-                    return gson.fromJson(json, movieListType);
-
-                }
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-
+        int responseCode = connection.getResponseCode();
+        if (responseCode != 200) {
+            throw new IOException("HTTP error code: " + responseCode);
         }
-        catch (Exception ignored){ }
 
-      return null;
+        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        StringBuilder response = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            response.append(line);
+        }
+        reader.close();
+
+        List<Movie> movies = gson.fromJson(response.toString(), movieListType);
+
+        return movies;
     }
 
-
-    public List<Movie> getMoviesByQuery(String endpoint, String query, int releaseYear, double ratingFrom){
+    public List<Movie> getMoviesByQuery(String endpoint, String query, int releaseYear, double ratingFrom, String genre) {
 
         String baseUrl = endpoint + "?";
 
-        Type movieListType = new TypeToken<List<Movie>>(){}.getType();
+        Type movieListType = new TypeToken<List<Movie>>() {
+        }.getType();
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Movie.class, new MovieAdapter())
@@ -72,13 +63,10 @@ public class MovieAPI {
 
         OkHttpClient httpClient = new OkHttpClient();
 
-
-
         if (query != null) baseUrl += "query=" + query + "&";
         if (releaseYear > 0) baseUrl += "releaseYear=" + String.valueOf(releaseYear) + "&";
-        if(ratingFrom > 0) baseUrl += "ratingFrom=" + String.valueOf(ratingFrom) + "&";
-        // TODO: query build for genre
-
+        if (ratingFrom > 0) baseUrl += "ratingFrom=" + String.valueOf(ratingFrom) + "&";
+        if (genre != null) baseUrl += "genre=" + genre + "&";
 
         Request request = new Request.Builder()
                 .url(baseUrl)
@@ -93,54 +81,13 @@ public class MovieAPI {
             try (ResponseBody body = response.body()) {
                 if (body != null) {
                     String json = body.string();
-
                     return gson.fromJson(json, movieListType);
-
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-
+        } catch (Exception ignored) {
         }
-        catch (Exception ignored){ }
-
-        return null;
-    }
-
-    public List<Movie> searchMovies(String endpoint, String query, String genre) throws IOException {
-
-        Type movieListType = new TypeToken<List<Movie>>(){}.getType();
-
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Movie.class, new MovieAdapter())
-                .create();
-
-        OkHttpClient httpClient = new OkHttpClient();
-
-
-
-        HttpUrl.Builder urlBuilder = HttpUrl.parse(endpoint).newBuilder();
-        urlBuilder.addQueryParameter("query", query);
-        urlBuilder.addQueryParameter("genre", genre);
-        String url = urlBuilder.build().toString();
-
-        Request request = new Request.Builder()
-                .url(url)
-                .header("User-Agent", "http.agent")
-                .build();
-
-        try{
-            Response response = httpClient.newCall(request).execute();
-            if (!response.isSuccessful()) {
-                throw new IOException("Unexpected code " + response);
-            }
-
-            ResponseBody body = response.body();
-            if (body != null) {
-                String json = body.string();
-                return gson.fromJson(json, movieListType);
-            }
-        }catch (Exception ignored){}
 
         return null;
     }
