@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb.api;
 
+import at.ac.fhcampuswien.fhmdb.DisableSSLValidation;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.api.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.utils.MovieAdapter;
@@ -18,16 +19,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MovieAPI {
+
     public static final String BASE_URL = "https://prog2.fh-campuswien.ac.at/movies";
 
     public MovieAPI() {
     }
 
     public List<Movie> getAllMovies(String endpoint) throws IOException {
+        DisableSSLValidation.disable();
         Type movieListType = new TypeToken<List<Movie>>() {
         }.getType();
         Gson gson = new GsonBuilder().create();
-
+        DisableSSLValidation.disable();
         HttpURLConnection connection = (HttpURLConnection) new URL(endpoint).openConnection();
         connection.setRequestMethod("GET");
         connection.connect();
@@ -51,7 +54,7 @@ public class MovieAPI {
     }
 
     public List<Movie> getMoviesByQuery(String endpoint, String query, int releaseYear, double ratingFrom, String genre) {
-
+        DisableSSLValidation.disable();
         String baseUrl = endpoint + "?";
 
         Type movieListType = new TypeToken<List<Movie>>() {
@@ -72,7 +75,6 @@ public class MovieAPI {
                 .url(baseUrl)
                 .header("User-Agent", "http.agent")
                 .build();
-
         try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 throw new IOException("Unexpected code " + response);
