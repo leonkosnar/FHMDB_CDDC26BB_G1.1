@@ -50,19 +50,20 @@ public class HomeController implements Initializable {
 
 // TODO gibt jene Person zurück, die am öftesten im mainCast der übergebenen Filme vorkommt.
     public static String getMostPopularActor(List<Movie> movies) {
-       
-        if (movies == null || movies.isEmpty()) {
-            return ""; // Return an empty string if the list is null or empty
-        }
+        if (movies.isEmpty()) return "";
 
-    
-        Map<String, Long> actorNameMap = movies.stream()          
-                .filter(movie -> movie.getMainCast() != null && !movie.getMainCast().isEmpty())           
-                .flatMap(movie -> movie.getMainCast().stream())          
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));   
-        Optional<Map.Entry<String, Long>> mostPopularActorEntry = actorNameMap.entrySet().stream()
-                .max(Map.Entry.comparingByValue());
-        return mostPopularActorEntry.map(Map.Entry::getKey).orElse("");
+        List<String> allStrings = movies.stream()
+                .flatMap(obj -> obj.getMainCast().stream())
+                .toList();
+
+        Map<String, Long> frequencyMap = allStrings.stream()
+                .collect(Collectors.groupingBy(str -> str, Collectors.counting()));
+
+
+        return frequencyMap.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(null);
     }
 
 // TODO filtert auf den längsten Titel der übergebenen Filme und gibt die Anzahl der Buchstaben des Titels zurück
@@ -174,7 +175,6 @@ public class HomeController implements Initializable {
         int releaseYear = releaseYearComboBox.getValue() != null ? releaseYearComboBox.getValue() : 0;
         double ratingFrom = ratingComboBox.getValue() != null ? ratingComboBox.getValue() : 0.0;
         Genre genre = genreComboBox.getValue() != null ? (Genre) genreComboBox.getValue() : null;
-
 
         observableMovies.setAll(movieAPI.getMoviesByQuery(MovieAPI.BASE_URL, query, releaseYear, ratingFrom, genre != null ? genre.name() : null));
     }
