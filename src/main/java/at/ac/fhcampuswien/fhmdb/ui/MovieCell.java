@@ -18,7 +18,6 @@ public class MovieCell extends ListCell<Movie> {
     private final HBox title_wrapper = new HBox(title, title_info);
     private final Label detail = new Label();
     private final ImageView imgView = new ImageView();
-
     private final VBox info_wrapper = new VBox(title_wrapper, detail);
     private final HBox layout = new HBox(imgView, info_wrapper);
 
@@ -51,11 +50,9 @@ public class MovieCell extends ListCell<Movie> {
 
             detail.setText(movieDetails);
 
-            imgView.setImage(new Image(movie.getImgUrl()));
+            /*imgView.setImage(new Image(movie.getImgUrl()));
             imgView.setFitHeight(200);
-            imgView.setPreserveRatio(true);
-
-            setGraphic(layout);
+            imgView.setPreserveRatio(true);*/
 
             // color scheme
             title.getStyleClass().add("move-cell-title");
