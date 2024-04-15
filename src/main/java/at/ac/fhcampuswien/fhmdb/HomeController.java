@@ -46,6 +46,74 @@ public class HomeController implements Initializable {
     private MovieAPI movieAPI;
     private ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
 
+
+
+// TODO gibt jene Person zurück, die am öftesten im mainCast der übergebenen Filme vorkommt.
+    public static String getMostPopularActor(List<Movie> movies) {
+       
+        if (movies == null || movies.isEmpty()) {
+            return ""; // Return an empty string if the list is null or empty
+        }
+
+    
+        Map<String, Long> actorNameMap = movies.stream()          
+                .filter(movie -> movie.getMainCast() != null && !movie.getMainCast().isEmpty())           
+                .flatMap(movie -> movie.getMainCast().stream())          
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));   
+        Optional<Map.Entry<String, Long>> mostPopularActorEntry = actorNameMap.entrySet().stream()
+                .max(Map.Entry.comparingByValue());
+        return mostPopularActorEntry.map(Map.Entry::getKey).orElse("");
+    }
+
+// TODO filtert auf den längsten Titel der übergebenen Filme und gibt die Anzahl der Buchstaben des Titels zurück
+    public static int getLongestMovieTitle(List<Movie> movies) {
+        if (movies == null || movies.isEmpty()) {
+            return 0;
+        }
+
+        return movies.stream()
+                .map(Movie::getTitle)
+                .filter(title -> title != null && !title.trim().isEmpty())
+                .mapToInt(title -> title.trim().length())
+                .max()
+                .orElse(0);
+    }
+
+    // TODO gibt die Anzahl der Filme eines bestimmten Regisseurs zurück.
+    public static long countMoviesFrom(List<Movie> movies, String director) {
+        if (movies == null || movies.isEmpty() || director == null || director.trim().isEmpty()) {
+            return 0;
+        }
+
+        return movies.stream()
+                .filter(movie -> movie.getDirectors() != null)
+                .flatMap(movie -> movie.getDirectors().stream())
+                .filter(dir -> dir != null && dir.trim().equalsIgnoreCase(director.trim()))
+                .count();
+    }
+
+    // TODO gibt jene Filme zurück, die zwischen zwei gegebenen Jahren veröffentlicht wurden.
+    public static List<Movie> getMoviesBetweenYears(List<Movie> movies, int startYear, int endYear) {
+        if (movies == null || movies.isEmpty() || startYear > endYear) {
+            return new ArrayList<>();
+        }
+
+        return movies.stream()
+                .filter(movie -> {
+                    int releaseYear = movie.getReleaseYear();
+                    return releaseYear >= startYear && releaseYear <= endYear;
+                })
+                .collect(Collectors.toList());
+    }
+
+
+
+
+
+
+
+
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         movieAPI = new MovieAPI();
@@ -124,91 +192,6 @@ public class HomeController implements Initializable {
         return yearsList;
     }
 
-    // TODO gibt jene Person zurück, die am öftesten im mainCast der übergebenen Filme vorkommt.
-    public static String getMostPopularActor(List<Movie> movies) {
-
-        if (movies == null || movies.isEmpty()) {
-            return "";
-        }
-
-        Map<String, Long> actorNameToOccurrencesMap = new HashMap<>();
-
-        // Iterate through each movie in the list
-        for (Movie movie : movies) {
-            // Check if the movie's main cast is not empty
-            if (movie.getMainCast() != null && !movie.getMainCast().isEmpty()) {
-                // Iterate through each actor in the main cast
-                for (String actor : movie.getMainCast()) {
-                    // Increment the occurrence count of the actor in the map
-                    actorNameToOccurrencesMap.put(actor, actorNameToOccurrencesMap.getOrDefault(actor, 0L) + 1);
-                }
-            }
-        }
-
-        // Find the actor with the maximum occurrence count
-        Optional<Map.Entry<String, Long>> mostPopularActorEntry = actorNameToOccurrencesMap.entrySet().stream()
-                .max(Map.Entry.comparingByValue());
-
-        // Return the name of the most popular actor, or an empty string if no actor is found
-        return mostPopularActorEntry.map(Map.Entry::getKey).orElse("");
-    }
-
-
-
-
-    // TODO filtert auf den längsten Titel der übergebenen Filme und gibt die Anzahl der Buchstaben des Titels zurück
-    public static int getLongestMovieTitle(List<Movie> movies) {
-        if (movies == null || movies.isEmpty()) {
-            return 0;
-        }
-
-        int maxLength = 0;
-        for (Movie movie : movies) {
-            String title = movie.getTitle();
-            if (title != null && !title.trim().isEmpty()) {
-                maxLength = Math.max(maxLength, title.trim().length());
-            }
-        }
-        return maxLength;
-    }
-
-
-
-    // TODO gibt die Anzahl der Filme eines bestimmten Regisseurs zurück.
-    public static long countMoviesFrom(List<Movie> movies, String director) {
-        if (movies == null || movies.isEmpty() || director == null || director.trim().isEmpty()) {
-            return 0;
-        }
-
-        long count = 0;
-        for (Movie movie : movies) {
-            List<String> directors = movie.getDirectors();
-            if (directors != null && !directors.isEmpty()) {
-                for (String dir : directors) {
-                    if (dir != null && dir.trim().equalsIgnoreCase(director.trim())) {
-                        count++;
-                        break;
-                    }
-                }
-            }
-        }
-        return count;
-    }
-
-    // TODO gibt jene Filme zurück, die zwischen zwei gegebenen Jahren veröffentlicht wurden.
-    public static List<Movie> getMoviesBetweenYears(List<Movie> movies, int startYear, int endYear) {
-        if (movies == null || movies.isEmpty() || startYear > endYear) {
-            return new ArrayList<>();
-        }
-
-        List<Movie> result = new ArrayList<>();
-        for (Movie movie : movies) {
-            int releaseYear = movie.getReleaseYear();
-            if (releaseYear >= startYear && releaseYear <= endYear) {
-                result.add(movie);
-            }
-        }
-        return result;
-    }
+   
 
 }
