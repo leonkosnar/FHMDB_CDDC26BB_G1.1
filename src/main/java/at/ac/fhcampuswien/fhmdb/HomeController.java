@@ -126,7 +126,7 @@ public class HomeController implements Initializable {
             observableMovies.addAll(movieAPI.getAllMovies(MovieAPI.BASE_URL));
             allMovies = observableMovies;
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
