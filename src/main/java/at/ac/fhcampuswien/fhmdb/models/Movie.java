@@ -1,23 +1,36 @@
 package at.ac.fhcampuswien.fhmdb.models;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import at.ac.fhcampuswien.fhmdb.data.WatchlistMovieEntity;
+
 import java.util.List;
-import at.ac.fhcampuswien.fhmdb.Genre;
+import java.util.ArrayList;
 
 public class Movie {
 
     private String id;
     private String title;
-    public  ArrayList<Genre> genres;
-    private int releaseYear;
     private String description;
+    public List<Genre> genres;
+    private int releaseYear;
     private String imgUrl;
     private int lengthInMinutes;
     private ArrayList<String> directors;
     private ArrayList<String> writers;
     private ArrayList<String> mainCast;
     private double rating;
+
+
+    public Movie(WatchlistMovieEntity watchlistMovieEntity){
+        this.id = watchlistMovieEntity.getApiId();
+        this.title = watchlistMovieEntity.getTitle();
+        this.description = watchlistMovieEntity.getDescription();
+        this.genres = watchlistMovieEntity.getGenres();
+        this.releaseYear = watchlistMovieEntity.getReleaseYear();
+        this.imgUrl = watchlistMovieEntity.getImgUrl();
+        this.lengthInMinutes = watchlistMovieEntity.getLengthInMinutes();
+        this.rating = watchlistMovieEntity.getRating();
+    }
+
 
     public Movie(String id, String title,  ArrayList<Genre> genres, int releaseYear, String description, String imgUrl, int lengthInMinutes, ArrayList<String> directors, ArrayList<String> writers, ArrayList<String> mainCast, int rating) {
         this.id = id;
@@ -36,6 +49,9 @@ public class Movie {
     public Movie(){
 
     }
+
+
+
     public String getId() {return id;}
     public String getTitle() {return title;}
     public int getReleaseYear() {return releaseYear;}
@@ -45,21 +61,24 @@ public class Movie {
     public double getRating() {return rating;}
     public ArrayList<String> getMainCast() {return mainCast;}
     public ArrayList<String> getDirectors() {return directors;}
-    public ArrayList<Genre> getGenres(){
+    public List<Genre> getGenres(){
         return genres;
     };
 
     public String getGenresAsString() {
+        if(genres == null) return "";
         return genres.stream().map(Enum::name).reduce((a, b) -> a + ", " + b).orElse("No Genre");
-
     }
     public String getDirectorsAsString() {
+        if(directors == null) return "";
         return directors.stream().reduce((a, b) -> a + ", " + b).orElse("n/a");
     }
     public String getWritersAsString() {
+        if(writers == null) return "";
         return writers.stream().reduce((a, b) -> a + ", " + b).orElse("No Genre");
     }
     public String getMainCastAsString() {
+        if(mainCast == null) return "";
         return mainCast.stream().reduce((a, b) -> a + ", " + b).orElse("No Genre");
     }
 
@@ -106,6 +125,8 @@ public class Movie {
     public void setRating(double rating) {
         this.rating = rating;
     }
+
+
 
 
 }

@@ -1,5 +1,5 @@
 package at.ac.fhcampuswien.fhmdb.utils;
-import at.ac.fhcampuswien.fhmdb.Genre;
+import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 
 import com.google.gson.TypeAdapter;

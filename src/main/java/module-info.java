@@ -5,11 +5,17 @@ module at.ac.fhcampuswien.fhmdb {
     requires com.jfoenix;
     requires okhttp3;
     requires com.google.gson;
+    requires ormlite.jdbc;
+    requires java.sql;
 
 
     opens at.ac.fhcampuswien.fhmdb.models to com.google.gson;
     opens at.ac.fhcampuswien.fhmdb.api to okhttp3;
+    opens at.ac.fhcampuswien.fhmdb.data to ormlite.jdbc;
+
 
     exports at.ac.fhcampuswien.fhmdb;
     exports at.ac.fhcampuswien.fhmdb.models;
+    exports at.ac.fhcampuswien.fhmdb.controller;
+    exports at.ac.fhcampuswien.fhmdb.data;
 }
