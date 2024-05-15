@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox prefHeight="331.0" prefWidth="570.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.fhcampuswien.fhmdb.HomeController">
+<VBox prefHeight="331.0" prefWidth="570.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.fhcampuswien.fhmdb.controller.HomeController">
    <HBox alignment="CENTER_LEFT" prefHeight="42.0" prefWidth="347.0" spacing="20.0" style="-fx-background-color: gray;">
       <padding>
          <Insets bottom="7.0" left="10.0" top="7.0" />
@@ -30,6 +30,7 @@
          <JFXComboBox fx:id="releaseYearComboBox" focusColor="#f5c518" layoutX="266.0" layoutY="30.0" styleClass="filter-combo-box" stylesheets="@styles.css" />
          <JFXComboBox fx:id="ratingComboBox" focusColor="#f5c518" layoutX="327.0" layoutY="30.0" styleClass="filter-combo-box" stylesheets="@styles.css" />
          <JFXButton fx:id="searchBtn" style="-fx-background-color: lime;" styleClass="background-yellow" stylesheets="@styles.css" text="Search" />
+         <JFXButton fx:id="watchlistBtn" styleClass="background-yellow" stylesheets="@styles.css" text="Show Watchlist" />
       </children>
       <VBox.margin>
          <Insets />
