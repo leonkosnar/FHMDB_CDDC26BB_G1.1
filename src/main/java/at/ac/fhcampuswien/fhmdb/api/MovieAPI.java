@@ -20,7 +20,7 @@ import java.util.List;
 
 public class MovieAPI {
 
-    public static final String BASE_URL = "https://prog2.fh-campuswien.ac.at/movies";
+    public static final String BASE_URL = "https://prog2.fh-campuswien.ac.at/movie";
 
     public MovieAPI() {
     }
