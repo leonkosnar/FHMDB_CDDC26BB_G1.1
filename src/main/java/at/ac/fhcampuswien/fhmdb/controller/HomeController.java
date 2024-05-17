@@ -3,6 +3,7 @@ package at.ac.fhcampuswien.fhmdb.controller;
 import at.ac.fhcampuswien.fhmdb.data.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.data.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.exceptions.DatabaseException;
+import at.ac.fhcampuswien.fhmdb.exceptions.MovieApiException;
 import at.ac.fhcampuswien.fhmdb.interfaces.ClickEventHandler;
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
@@ -180,7 +181,7 @@ public class HomeController implements Initializable {
         try{
             observableMovies.addAll(movieAPI.getAllMovies(MovieAPI.BASE_URL));
 
-        }catch(IOException e){
+        }catch(MovieApiException e){
             e.printStackTrace();
         }
 
@@ -213,7 +214,11 @@ public class HomeController implements Initializable {
     }
     public void initializeBehaviour(){
         searchBtn.setOnAction(actionEvent -> {
-            updateMovieList();
+            try {
+                updateMovieList();
+            } catch (MovieApiException e) {
+                throw new RuntimeException(e);
+            }
         });
         AtomicBoolean ascendingOrder = new AtomicBoolean(true);
 
@@ -236,7 +241,7 @@ public class HomeController implements Initializable {
         watchlistBtn.setOnAction(actionEvent -> ScreenController.switchToWatchlistView());
     }
 
-    private void updateMovieList() {
+    private void updateMovieList() throws MovieApiException {
         String query = searchField.getText();
         int releaseYear = releaseYearComboBox.getValue() != null ? releaseYearComboBox.getValue() : 0;
         double ratingFrom = ratingComboBox.getValue() != null ? ratingComboBox.getValue() : 0.0;

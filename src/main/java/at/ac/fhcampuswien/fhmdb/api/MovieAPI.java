@@ -1,6 +1,7 @@
 package at.ac.fhcampuswien.fhmdb.api;
 
 import at.ac.fhcampuswien.fhmdb.DisableSSLValidation;
+import at.ac.fhcampuswien.fhmdb.exceptions.MovieApiException;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.api.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.utils.MovieAdapter;
@@ -15,7 +16,6 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MovieAPI {
@@ -25,35 +25,40 @@ public class MovieAPI {
     public MovieAPI() {
     }
 
-    public List<Movie> getAllMovies(String endpoint) throws IOException {
-        DisableSSLValidation.disable();
-        Type movieListType = new TypeToken<List<Movie>>() {
-        }.getType();
-        Gson gson = new GsonBuilder().create();
-        DisableSSLValidation.disable();
-        HttpURLConnection connection = (HttpURLConnection) new URL(endpoint).openConnection();
-        connection.setRequestMethod("GET");
-        connection.connect();
+    public List<Movie> getAllMovies(String endpoint) throws MovieApiException {
+        try {
+            DisableSSLValidation.disable();
+            Type movieListType = new TypeToken<List<Movie>>() {
+            }.getType();
+            Gson gson = new GsonBuilder().create();
+            DisableSSLValidation.disable();
+            HttpURLConnection connection = (HttpURLConnection) new URL(endpoint).openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
 
-        int responseCode = connection.getResponseCode();
-        if (responseCode != 200) {
-            throw new IOException("HTTP error code: " + responseCode);
+            int responseCode = connection.getResponseCode();
+            if (responseCode != 200) {
+                throw new MovieApiException("HTTP error code: " + responseCode);
+            }
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+            }
+            reader.close();
+
+            List<Movie> movies = gson.fromJson(response.toString(), movieListType);
+
+            return movies;
         }
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        StringBuilder response = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            response.append(line);
+        catch(IOException exception){
+            throw new MovieApiException(exception);
         }
-        reader.close();
-
-        List<Movie> movies = gson.fromJson(response.toString(), movieListType);
-
-        return movies;
     }
 
-    public List<Movie> getMoviesByQuery(String endpoint, String query, int releaseYear, double ratingFrom, String genre) {
+    public List<Movie> getMoviesByQuery(String endpoint, String query, int releaseYear, double ratingFrom, String genre) throws MovieApiException {
         DisableSSLValidation.disable();
         String baseUrl = endpoint + "?";
 
@@ -77,7 +82,7 @@ public class MovieAPI {
                 .build();
         try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                throw new IOException("Unexpected code " + response);
+                throw new MovieApiException("unexpected status-code: " + response);
             }
 
             try (ResponseBody body = response.body()) {
@@ -86,9 +91,10 @@ public class MovieAPI {
                     return gson.fromJson(json, movieListType);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new MovieApiException(e);
             }
-        } catch (Exception ignored) {
+        } catch (IOException exception) {
+            throw new MovieApiException(exception);
         }
 
         return null;

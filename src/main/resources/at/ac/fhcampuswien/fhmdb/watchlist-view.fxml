@@ -14,7 +14,7 @@
             <Insets bottom="7.0" left="10.0" top="7.0" />
         </padding>
         <children>
-            <Label style="-fx-background-color: F5C518;" text="FHMDb">
+            <Label style="-fx-background-color: orange;" text="FHMDb" textFill="WHITE">
                 <font>
                     <Font name="Calibri Bold" size="24.0" />
                 </font>
@@ -22,12 +22,12 @@
                     <Insets left="2.0" right="2.0" />
                 </padding>
             </Label>
-            <Label styleClass="text-white" stylesheets="@styles.css" text="Welcome to your Watchlist!" />
+            <Label textFill="WHITE" stylesheets="@styles.css" text="My Watchlist" />
         </children>
     </HBox>
     <HBox spacing="5.0" styleClass="background-black" stylesheets="@styles.css">
         <children>
-            <JFXButton fx:id="homeViewButton" styleClass="background-yellow" stylesheets="@styles.css" text="Go Back Home" />
+            <JFXButton fx:id="homeViewButton" styleClass="background-yellow" stylesheets="@styles.css" text="Back to All Movies" />
         </children>
         <VBox.margin>
             <Insets />
